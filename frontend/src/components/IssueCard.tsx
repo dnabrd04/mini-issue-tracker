@@ -1,3 +1,4 @@
+import { PRIORITY_LABELS } from '../lib/issues'
 import type { Issue } from '../types/issue'
 
 interface IssueCardProps {
@@ -25,7 +26,12 @@ export function IssueCard({ issue, onOpen, onEdit, onDelete }: IssueCardProps) {
         }
       }}
     >
-      <h3 className="issue-card__title">{issue.title}</h3>
+      <div className="issue-card__header">
+        <h3 className="issue-card__title">{issue.title}</h3>
+        <span className={`priority-badge priority-badge--${issue.priority.toLowerCase()}`}>
+          {PRIORITY_LABELS[issue.priority]}
+        </span>
+      </div>
       <p className="issue-card__description">{issue.description}</p>
       <div className="issue-card__actions">
         <button
