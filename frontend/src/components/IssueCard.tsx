@@ -1,5 +1,7 @@
 import { PRIORITY_LABELS } from '../lib/issues'
 import type { Issue } from '../types/issue'
+import { EditIcon } from '../assets/icons/EditIcon.tsx'
+import { DeleteIcon } from '../assets/icons/DeleteIcon.tsx'
 
 interface IssueCardProps {
   issue: Issue
@@ -42,7 +44,7 @@ export function IssueCard({ issue, onOpen, onEdit, onDelete }: IssueCardProps) {
             onEdit(issue)
           }}
         >
-          Editar
+          <EditIcon />
         </button>
         <button
           type="button"
@@ -52,7 +54,7 @@ export function IssueCard({ issue, onOpen, onEdit, onDelete }: IssueCardProps) {
             onDelete(issue)
           }}
         >
-          Eliminar
+          <DeleteIcon />
         </button>
       </div>
     </article>
