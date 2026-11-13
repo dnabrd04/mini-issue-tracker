@@ -1,3 +1,16 @@
 spring:
+  config: 
+    import: optional:file:.env[.properties]
   application:
     name: issue-tracker
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/mini_issue_tracker?serverTimezone=UTC}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:none}
+
+server:
+  port: ${SERVER_PORT:8081}
