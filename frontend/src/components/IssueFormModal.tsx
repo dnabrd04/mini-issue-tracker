@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { SubmitEvent } from 'react'
+import { ApiError } from '../api/http'
 import { PRIORITIES, PRIORITY_LABELS, STATUSES, STATUS_LABELS } from '../lib/issues'
 import type { Issue, IssueInput, Priority, Status } from '../types/issue'
 import { Modal } from './Modal'
@@ -55,6 +56,23 @@ export function IssueFormModal({ mode, initialIssue, onClose, onSubmit }: IssueF
         status,
       })
     } catch (error) {
+      if (error instanceof ApiError) {
+        const nextFieldErrors: FieldErrors = {}
+
+        if (error.fieldErrors.title) {
+          nextFieldErrors.title = error.fieldErrors.title
+        }
+        if (error.fieldErrors.description) {
+          nextFieldErrors.description = error.fieldErrors.description
+        }
+
+        if (Object.keys(nextFieldErrors).length > 0) {
+          setErrors(nextFieldErrors)
+          setSaving(false)
+          return
+        }
+      }
+
       setFormError(error instanceof Error ? error.message : 'No se pudo guardar la issue')
       setSaving(false)
     }
@@ -81,6 +99,7 @@ export function IssueFormModal({ mode, initialIssue, onClose, onSubmit }: IssueF
           <textarea
             id="issue-description"
             rows={5}
+            maxLength={2000}
             value={description}
             aria-invalid={Boolean(errors.description)}
             onChange={(event) => setDescription(event.target.value)}
