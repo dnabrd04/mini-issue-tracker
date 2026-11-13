@@ -1,68 +1,35 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
-import { createIssue, deleteIssue, listIssues, updateIssue } from './api/issues'
 import { Board } from './components/Board'
 import { FilterBar } from './components/FilterBar'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { IssueDetailModal } from './components/IssueDetailModal'
 import { IssueFormModal } from './components/IssueFormModal'
+import { useIssues } from './hooks/useIssues'
 import type { Issue, IssueInput, Priority, Status } from './types/issue'
 
 type FormModalState = { mode: 'create' } | { mode: 'edit'; issue: Issue } | null
 
 function App() {
-  const [issues, setIssues] = useState<Issue[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [priorityFilter, setPriorityFilter] = useState<Priority | 'ALL'>('ALL')
   const [statusFilter, setStatusFilter] = useState<Status | 'ALL'>('ALL')
   const [formModal, setFormModal] = useState<FormModalState>(null)
   const [detailIssue, setDetailIssue] = useState<Issue | null>(null)
 
-  useEffect(() => {
-    let active = true
-
-    listIssues()
-      .then((data) => {
-        if (active) {
-          setIssues(data)
-        }
-      })
-      .catch((loadError: unknown) => {
-        if (active) {
-          setError(loadError instanceof Error ? loadError.message : 'No se pudieron cargar las issues')
-        }
-      })
-      .finally(() => {
-        if (active) {
-          setLoading(false)
-        }
-      })
-
-    return () => {
-      active = false
-    }
-  }, [])
-
-  const normalizedSearch = search.trim().toLowerCase()
-  const filteredIssues = issues.filter((issue) => {
-    const matchesSearch =
-      normalizedSearch === '' || issue.title.toLowerCase().includes(normalizedSearch)
-    const matchesPriority = priorityFilter === 'ALL' || issue.priority === priorityFilter
-    const matchesStatus = statusFilter === 'ALL' || issue.status === statusFilter
-    return matchesSearch && matchesPriority && matchesStatus
+  const { issues, loading, error, createIssue, updateIssue, deleteIssue } = useIssues({
+    search,
+    priority: priorityFilter,
+    status: statusFilter,
   })
 
   const handleSubmit = async (input: IssueInput) => {
     if (formModal?.mode === 'edit') {
       const updated = await updateIssue(formModal.issue.id, input)
-      setIssues((current) => current.map((issue) => (issue.id === updated.id ? updated : issue)))
       setDetailIssue((current) => (current && current.id === updated.id ? updated : current))
     } else {
-      const created = await createIssue(input)
-      setIssues((current) => [...current, created])
+      await createIssue(input)
     }
     setFormModal(null)
   }
@@ -72,13 +39,10 @@ function App() {
       return
     }
 
-    setError(null)
-    try {
-      await deleteIssue(issue.id)
-      setIssues((current) => current.filter((item) => item.id !== issue.id))
+    const deleted = await deleteIssue(issue.id)
+
+    if (deleted) {
       setDetailIssue((current) => (current && current.id === issue.id ? null : current))
-    } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : 'No se pudo eliminar la issue')
     }
   }
 
@@ -107,7 +71,7 @@ function App() {
           <p className="app-status">Cargando issues...</p>
         ) : (
           <Board
-            issues={filteredIssues}
+            issues={issues}
             statusFilter={statusFilter}
             onOpen={setDetailIssue}
             onEdit={(issue) => setFormModal({ mode: 'edit', issue })}
