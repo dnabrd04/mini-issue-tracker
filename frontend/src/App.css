@@ -153,7 +153,14 @@
 }
 
 .button--danger {
-  color: #dc2626;
+  border-color: #dc2626;
+  background: #dc2626;
+  color: #fff;
+}
+
+.button--danger:hover:not(:disabled) {
+  border-color: #b91c1c;
+  background: #b91c1c;
 }
 
 .board {
@@ -274,8 +281,28 @@
 }
 
 .issue-card__actions .button {
-  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  line-height: 0;
   font-size: 13px;
+}
+
+.issue-card__actions .button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.issue-card__actions .button:not(.button--danger) {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.issue-card__actions .button:not(.button--danger):hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-border);
 }
 
 .priority-badge {
@@ -441,7 +468,6 @@
     color: #fca5a5;
   }
 
-  .button--danger,
   .form-error {
     color: #f87171;
   }
