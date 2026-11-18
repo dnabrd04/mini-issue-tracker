@@ -1,78 +1,46 @@
-# React + TypeScript + Vite
+# Frontend - Mini Issue Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interfaz web del proyecto desarrollada con React 19, TypeScript y Vite. Consume la API REST del backend para visualizar y gestionar incidencias.
 
-Currently, two official plugins are available:
+Para la descripción general del proyecto, el modelo de datos y la puesta en marcha completa (incluida la preparación de la base de datos y el backend), consulta el [README raíz](../README.md).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Requisitos
 
-## React Compiler
+- Node.js
+- `pnpm`
+- Backend en ejecución y accesible (por defecto en `http://localhost:8081`)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Configuración
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+| Variable | Descripción | Valor por defecto |
+| --- | --- | --- |
+| `VITE_API_URL` | URL base de la API backend | `http://localhost:8081` |
 
-## Expanding the ESLint configuration
+Puedes definirla en un archivo de entorno de Vite (por ejemplo `.env.local`) o al ejecutar los comandos.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Scripts
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Ejecutar desde el directorio `frontend/`:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+```bash
+# Instalar dependencias
+pnpm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Entorno de desarrollo
+pnpm dev
 
+# Comprobar tipos y generar build
+pnpm build
+
+# Lint
+pnpm lint
+
+# Previsualizar build
+pnpm preview
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Notas
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+- La aplicación se sirve normalmente en `http://localhost:5173` durante el desarrollo.
+- Consume el recurso `/api/issues` documentado en el [README raíz](../README.md#api-rest).
+- No hay suite de tests automatizados configurada actualmente.
